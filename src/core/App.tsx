@@ -1,4 +1,5 @@
 import { JSX, useState, useMemo, createContext, Suspense, lazy } from "react";
+import { Provider } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {
   useMediaQuery,
@@ -9,8 +10,9 @@ import {
   LinearProgress,
 } from "@mui/material";
 
-import baseTheme, { darkMode, mobile } from "configs/theme";
+import store from "configs/store";
 import { publicPaths, privatePaths } from "configs/routePaths";
+import baseTheme, { darkMode, mobile } from "configs/theme";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -63,35 +65,37 @@ const App = (): JSX.Element => {
   );
 
   return (
-    <BrowserRouter>
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Suspense fallback={<LinearProgress />}>
-            <Routes>
-              {publicRoutes.map((route) => (
+    <Provider store={store}>
+      <BrowserRouter>
+        <ColorModeContext.Provider value={colorMode}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Suspense fallback={<LinearProgress />}>
+              <Routes>
+                {publicRoutes.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<PublicRoute>{route.Component}</PublicRoute>}
+                  />
+                ))}
+                {privateRoutes.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<ProtectedRoute>{route.Component}</ProtectedRoute>}
+                  />
+                ))}
                 <Route
-                  key={route.path}
-                  path={route.path}
-                  element={<PublicRoute>{route.Component}</PublicRoute>}
+                  path="*"
+                  element={<Navigate to={publicPaths.login} replace />}
                 />
-              ))}
-              {privateRoutes.map((route) => (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={<ProtectedRoute>{route.Component}</ProtectedRoute>}
-                />
-              ))}
-              <Route
-                path="*"
-                element={<Navigate to={publicPaths.login} replace />}
-              />
-            </Routes>
-          </Suspense>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
-    </BrowserRouter>
+              </Routes>
+            </Suspense>
+          </ThemeProvider>
+        </ColorModeContext.Provider>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
