@@ -15,7 +15,7 @@ const authSlice = createSlice({
       state.isLoading = action.payload;
     },
   },
-  extraReducers: {},
+  extraReducers: (builder) => {},
 });
 
 export const { setUser, setLoading } = authSlice.actions;

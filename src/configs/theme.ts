@@ -14,6 +14,15 @@ const theme = {
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
+    h4: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontSize: "1.6rem",
+    },
+    button: {
+      fontSize: "1.6rem",
+    },
   },
   components: {
     MuiCssBaseline: {
