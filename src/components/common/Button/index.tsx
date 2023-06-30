@@ -2,7 +2,7 @@ import { JSX } from "react";
 import { ButtonProps, Button as MuiButton } from "@mui/material";
 
 interface ExtendedButtonProps extends ButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const Button = ({

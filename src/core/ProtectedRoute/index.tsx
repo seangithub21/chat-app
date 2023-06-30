@@ -8,7 +8,7 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children }: Props): JSX.Element => {
-  if (!localStorage.getItem("token")) {
+  if (!localStorage.getItem("ca-ue")) {
     return <Navigate to={publicPaths.login} replace />;
   }
 

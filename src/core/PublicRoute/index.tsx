@@ -8,7 +8,7 @@ interface Props {
 }
 
 const PublicRoute = ({ children }: Props): JSX.Element => {
-  if (localStorage.getItem("token")) {
+  if (localStorage.getItem("ca-ue")) {
     return <Navigate to={privatePaths.messages} replace />;
   }
 
