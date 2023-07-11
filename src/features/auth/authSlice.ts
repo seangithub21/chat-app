@@ -1,9 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { User, signInWithEmailAndPassword } from "firebase/auth";
 
 import { privatePaths } from "configs/routePaths";
 import { auth } from "configs/firebase";
+import { USER_EMAIL } from "constants/localStorage";
+
+interface InitialState {
+  user: User | {};
+  isLoading: Boolean;
+}
 
 interface LoginParams {
   email: string;
@@ -16,7 +22,7 @@ export const login = createAsyncThunk(
   async ({ email, password, navigate }: LoginParams) => {
     return signInWithEmailAndPassword(auth, email, password).then(
       (userCredential) => {
-        localStorage.setItem("ca-ue", `${userCredential.user.email}`);
+        localStorage.setItem(USER_EMAIL, `${userCredential.user.email}`);
         navigate && navigate(privatePaths.messages);
         return;
       }
@@ -24,14 +30,16 @@ export const login = createAsyncThunk(
   }
 );
 
+const initialState: InitialState = {
+  user: {},
+  isLoading: false,
+};
+
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: {},
-    isLoading: false,
-  },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<User | {}>) => {
       state.user = action.payload;
       state.isLoading = false;
     },

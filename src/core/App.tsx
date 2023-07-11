@@ -8,7 +8,7 @@ import {
   useEffect,
 } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   useMediaQuery,
   createTheme,
@@ -27,6 +27,7 @@ import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
 const LoginPage = lazy(() => import("pages/LoginPage"));
+const MessagesPage = lazy(() => import("pages/MessagesPage"));
 
 interface ColorModeContextType {
   toggleColorMode?: () => void;
@@ -37,7 +38,7 @@ const publicRoutes = [{ path: publicPaths.login, Component: <LoginPage /> }];
 const privateRoutes = [
   {
     path: privatePaths.messages,
-    Component: <div>Messages</div>,
+    Component: <MessagesPage />,
   },
   {
     path: "*",
