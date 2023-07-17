@@ -1,14 +1,5 @@
-import {
-  JSX,
-  useState,
-  useMemo,
-  createContext,
-  Suspense,
-  lazy,
-  useEffect,
-} from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
+import { JSX, useState, useMemo, createContext, Suspense, lazy } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   useMediaQuery,
   createTheme,
@@ -18,16 +9,13 @@ import {
   LinearProgress,
 } from "@mui/material";
 
-import { setUser } from "features/auth/authSlice";
-import { useAppDispatch } from "hooks/reduxHooks";
 import { publicPaths, privatePaths } from "configs/routePaths";
-import { auth } from "configs/firebase";
 import baseTheme, { darkMode, mobile } from "configs/theme";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
 const LoginPage = lazy(() => import("pages/LoginPage"));
-const MessagesPage = lazy(() => import("pages/MessagesPage"));
+const ChatsPage = lazy(() => import("pages/ChatsPage"));
 
 interface ColorModeContextType {
   toggleColorMode?: () => void;
@@ -37,8 +25,8 @@ const publicRoutes = [{ path: publicPaths.login, Component: <LoginPage /> }];
 
 const privateRoutes = [
   {
-    path: privatePaths.messages,
-    Component: <MessagesPage />,
+    path: privatePaths.chats,
+    Component: <ChatsPage />,
   },
   {
     path: "*",
@@ -53,23 +41,6 @@ export const ColorModeContext = createContext<ColorModeContextType | null>(
 const App = (): JSX.Element => {
   const [themeMode, setThemeMode] = useState<PaletteMode>("light");
   const isMobile = useMediaQuery("(max-width:600px)");
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUser(JSON.parse(JSON.stringify(user))));
-      } else {
-        dispatch(setUser({}));
-        localStorage.clear();
-        navigate(publicPaths.login);
-      }
-    });
-
-    return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const colorMode = useMemo(
     () => ({

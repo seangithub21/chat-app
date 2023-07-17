@@ -1,1 +1,1 @@
-export const USER_EMAIL = "ca-ue";
+export const USER_DATA = "ca-ud";

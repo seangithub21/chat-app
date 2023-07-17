@@ -4,10 +4,10 @@ import { User, signInWithEmailAndPassword } from "firebase/auth";
 
 import { privatePaths } from "configs/routePaths";
 import { auth } from "configs/firebase";
-import { USER_EMAIL } from "constants/localStorage";
+import { USER_DATA } from "constants/localStorage";
 
 interface InitialState {
-  user: User | {};
+  user: Partial<User>;
   isLoading: Boolean;
 }
 
@@ -22,8 +22,14 @@ export const login = createAsyncThunk(
   async ({ email, password, navigate }: LoginParams) => {
     return signInWithEmailAndPassword(auth, email, password).then(
       (userCredential) => {
-        localStorage.setItem(USER_EMAIL, `${userCredential.user.email}`);
-        navigate && navigate(privatePaths.messages);
+        localStorage.setItem(
+          USER_DATA,
+          JSON.stringify({
+            email: `${userCredential.user.email}`,
+            uid: `${userCredential.user.uid}`,
+          })
+        );
+        navigate && navigate(privatePaths.chats);
         return;
       }
     );
@@ -39,7 +45,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User | {}>) => {
+    setUser: (state, action: PayloadAction<Partial<User>>) => {
       state.user = action.payload;
       state.isLoading = false;
     },
