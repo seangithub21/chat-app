@@ -8,7 +8,7 @@ interface GetChatsParams {
   email?: string;
 }
 
-export const getChats = createAsyncThunk(
+export const initializeUser = createAsyncThunk(
   "chats/getChats",
   async ({ uid, email }: GetChatsParams) => {
     const userDocRef = doc(db, `users/${uid}`);
@@ -33,13 +33,13 @@ const chatsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getChats.pending, (state, action) => {
+    builder.addCase(initializeUser.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(getChats.fulfilled, (state, action) => {
+    builder.addCase(initializeUser.fulfilled, (state, action) => {
       state.isLoading = false;
     });
-    builder.addCase(getChats.rejected, (state, action) => {
+    builder.addCase(initializeUser.rejected, (state, action) => {
       console.error(action.error.message);
       state.isLoading = false;
     });

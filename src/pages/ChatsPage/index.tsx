@@ -1,7 +1,7 @@
 import { JSX, useEffect } from "react";
 import { Typography } from "@mui/material";
 
-import { getChats } from "features/chats/chatsSlice";
+import { initializeUser } from "features/chats/chatsSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
 import { getUserData } from "utils/localStorage";
 import Button from "components/common/Button";
@@ -12,7 +12,7 @@ const ChatsPage = (): JSX.Element => {
 
   useEffect(() => {
     const { uid, email } = getUserData();
-    dispatch(getChats({ uid, email }));
+    dispatch(initializeUser({ uid, email }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -20,7 +20,7 @@ const ChatsPage = (): JSX.Element => {
     <div>
       <Typography variant="h4">ChatsPage</Typography>
       <ChatsList />
-      <Button>Create chat</Button>
+      <Button>New chat +</Button>
     </div>
   );
 };
