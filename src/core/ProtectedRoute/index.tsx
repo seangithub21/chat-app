@@ -7,6 +7,7 @@ import { useAppDispatch } from "hooks/reduxHooks";
 import { publicPaths } from "configs/routePaths";
 import { auth } from "configs/firebase";
 import { getUserData } from "utils/localStorage";
+import Layout from "components/Layout";
 
 interface Props {
   children?: JSX.Element;
@@ -35,7 +36,7 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
     return <Navigate to={publicPaths.login} replace />;
   }
 
-  return <>{children}</>;
+  return <Layout>{children}</Layout>;
 };
 
 export default ProtectedRoute;

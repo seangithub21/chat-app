@@ -16,7 +16,7 @@ export const getChats = createAsyncThunk(
     if (!userDocSnap.exists()) {
       return setDoc(userDocRef, {
         email,
-        chats: {},
+        chats: [],
         settings: {},
       });
     }
