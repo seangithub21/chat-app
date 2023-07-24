@@ -5,19 +5,13 @@ interface ExtendedButtonProps extends ButtonProps {
   onClick?: () => void;
 }
 
-const Button = ({
-  children,
-  sx,
-  ...props
-}: ExtendedButtonProps): JSX.Element => {
+const Button = ({ sx, ...props }: ExtendedButtonProps): JSX.Element => {
   return (
     <MuiButton
       variant="contained"
       sx={{ textTransform: "none", ...sx }}
       {...props}
-    >
-      {children}
-    </MuiButton>
+    />
   );
 };
 
