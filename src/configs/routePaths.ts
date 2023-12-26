@@ -1,4 +1,5 @@
 export const publicPaths = {
+  signup: "/signup",
   login: "/login",
 };
 

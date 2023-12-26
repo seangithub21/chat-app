@@ -1,6 +1,10 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
-import { User, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  User,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 import { privatePaths } from "configs/routePaths";
 import { auth } from "configs/firebase";
@@ -16,6 +20,31 @@ interface LoginParams {
   password: string;
   navigate?: NavigateFunction;
 }
+
+interface SignUpParams {
+  email: string;
+  password: string;
+  navigate?: NavigateFunction;
+}
+
+export const signUp = createAsyncThunk(
+  "auth/signup",
+  ({ email, password, navigate }: SignUpParams) => {
+    createUserWithEmailAndPassword(auth, email, password).then(
+      (userCredential) => {
+        localStorage.setItem(
+          USER_DATA,
+          JSON.stringify({
+            email: `${userCredential.user.email}`,
+            uid: `${userCredential.user.uid}`,
+          })
+        );
+        navigate && navigate(privatePaths.chats);
+        return;
+      }
+    );
+  }
+);
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -61,6 +90,16 @@ const authSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(login.rejected, (state, action) => {
+      console.error(action.error.message);
+      state.isLoading = false;
+    });
+    builder.addCase(signUp.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(signUp.fulfilled, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(signUp.rejected, (state, action) => {
       console.error(action.error.message);
       state.isLoading = false;
     });

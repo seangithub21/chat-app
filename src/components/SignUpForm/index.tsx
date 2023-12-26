@@ -4,7 +4,7 @@ import { Formik, Field, FieldProps } from "formik";
 import { Typography } from "@mui/material";
 
 import { publicPaths } from "configs/routePaths";
-import { login } from "features/auth/authSlice";
+import { signUp } from "features/auth/authSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
 import Input from "components/common/Input";
 import Button from "components/common/Button";
@@ -16,18 +16,18 @@ interface FormData {
   password: string;
 }
 
-const LoginForm = (): JSX.Element => {
+const SignUpForm = (): JSX.Element => {
   const classes = getStyles();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (data: FormData) => {
-    dispatch(login({ ...data, navigate }));
+    dispatch(signUp({ ...data, navigate }));
   };
 
   return (
     <div style={classes.container}>
-      <Typography variant="h4">Log in</Typography>
+      <Typography variant="h4">Sign up</Typography>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -45,13 +45,13 @@ const LoginForm = (): JSX.Element => {
                 <Input field={field} fullWidth variant="standard" />
               )}
             </Field>
-            <Button type="submit">Login</Button>
+            <Button type="submit">Sign up</Button>
           </form>
         )}
       </Formik>
-      <Link to={publicPaths.signup}>Or sign up</Link>
+      <Link to={publicPaths.login}>Or log in</Link>
     </div>
   );
 };
 
-export default LoginForm;
+export default SignUpForm;

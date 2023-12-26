@@ -14,6 +14,7 @@ import baseTheme, { darkMode, mobile } from "configs/theme";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
+const SignUpPage = lazy(() => import("pages/SignUpPage"));
 const LoginPage = lazy(() => import("pages/LoginPage"));
 const ChatsPage = lazy(() => import("pages/ChatsPage"));
 
@@ -21,7 +22,10 @@ interface ColorModeContextType {
   toggleColorMode?: () => void;
 }
 
-const publicRoutes = [{ path: publicPaths.login, Component: <LoginPage /> }];
+const publicRoutes = [
+  { path: publicPaths.signup, Component: <SignUpPage /> },
+  { path: publicPaths.login, Component: <LoginPage /> },
+];
 
 const privateRoutes = [
   {
