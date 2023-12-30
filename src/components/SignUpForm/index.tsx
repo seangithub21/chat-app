@@ -37,12 +37,12 @@ const SignUpForm = (): JSX.Element => {
           <form onSubmit={handleSubmit}>
             <Field name="email">
               {({ field }: FieldProps) => (
-                <Input field={field} fullWidth variant="standard" />
+                <Input field={field} label="Email" fullWidth />
               )}
             </Field>
             <Field name="password">
               {({ field }: FieldProps) => (
-                <Input field={field} fullWidth variant="standard" />
+                <Input field={field} label="Password" fullWidth />
               )}
             </Field>
             <Button type="submit">Sign up</Button>
