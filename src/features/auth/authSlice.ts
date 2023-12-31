@@ -5,9 +5,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import { privatePaths } from "configs/routePaths";
-import { auth } from "configs/firebase";
+import { db, auth } from "configs/firebase";
 import { USER_DATA } from "constants/localStorage";
 
 interface InitialState {
@@ -27,8 +28,29 @@ interface SignUpParams {
   navigate?: NavigateFunction;
 }
 
+interface InitializeUserParams {
+  email?: string | null;
+  uid?: string;
+}
+
+export const initializeUser = createAsyncThunk(
+  "auth/initializeUser",
+  async ({ uid, email }: InitializeUserParams) => {
+    const userDocRef = doc(db, `users/${uid}`);
+    const userDocSnap = await getDoc(userDocRef);
+    if (!userDocSnap.exists()) {
+      return setDoc(userDocRef, {
+        email,
+        chats: [],
+        settings: {},
+        uid,
+      });
+    }
+  }
+);
+
 export const signUp = createAsyncThunk(
-  "auth/signup",
+  "auth/signUp",
   ({ email, password, navigate }: SignUpParams) => {
     createUserWithEmailAndPassword(auth, email, password).then(
       (userCredential) => {
@@ -83,6 +105,16 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(initializeUser.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(initializeUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(initializeUser.rejected, (state, action) => {
+      console.error(action.error.message);
+      state.isLoading = false;
+    });
     builder.addCase(login.pending, (state, action) => {
       state.isLoading = true;
     });

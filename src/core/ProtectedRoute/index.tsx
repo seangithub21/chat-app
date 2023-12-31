@@ -2,7 +2,7 @@ import { JSX, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 
-import { setUser } from "features/auth/authSlice";
+import { initializeUser, setUser } from "features/auth/authSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
 import { publicPaths } from "configs/routePaths";
 import { auth } from "configs/firebase";
@@ -21,6 +21,7 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setUser(JSON.parse(JSON.stringify(user))));
+        dispatch(initializeUser({ uid: user.uid, email: user.email }));
       } else {
         dispatch(setUser({}));
         localStorage.clear();

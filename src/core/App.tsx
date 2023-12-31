@@ -17,6 +17,7 @@ import ProtectedRoute from "./ProtectedRoute";
 const SignUpPage = lazy(() => import("pages/SignUpPage"));
 const LoginPage = lazy(() => import("pages/LoginPage"));
 const ChatsPage = lazy(() => import("pages/ChatsPage"));
+const ContactsPage = lazy(() => import("pages/ContactsPage"));
 
 interface ColorModeContextType {
   toggleColorMode?: () => void;
@@ -31,6 +32,10 @@ const privateRoutes = [
   {
     path: privatePaths.chats,
     Component: <ChatsPage />,
+  },
+  {
+    path: privatePaths.contacts,
+    Component: <ContactsPage />,
   },
   {
     path: "*",
