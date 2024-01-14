@@ -5,5 +5,6 @@ export const publicPaths = {
 
 export const privatePaths = {
   chats: "/user/chats",
+  chat: "/user/chats/:id",
   contacts: "/user/contacts",
 };

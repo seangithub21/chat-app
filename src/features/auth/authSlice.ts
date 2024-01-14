@@ -1,18 +1,17 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
 import {
-  User,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { DocumentData, doc, getDoc, setDoc } from "firebase/firestore";
 
 import { privatePaths } from "configs/routePaths";
 import { db, auth } from "configs/firebase";
 import { USER_DATA } from "constants/localStorage";
 
 interface InitialState {
-  user: Partial<User>;
+  user: DocumentData | undefined;
   isLoading: Boolean;
 }
 
@@ -33,6 +32,7 @@ interface InitializeUserParams {
   uid?: string;
 }
 
+// Create a user document and set to users collection
 export const initializeUser = createAsyncThunk(
   "auth/initializeUser",
   async ({ uid, email }: InitializeUserParams) => {
@@ -41,7 +41,6 @@ export const initializeUser = createAsyncThunk(
     if (!userDocSnap.exists()) {
       return setDoc(userDocRef, {
         email,
-        chats: [],
         settings: {},
         uid,
       });
@@ -96,7 +95,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<Partial<User>>) => {
+    setUser: (state, action: PayloadAction<DocumentData | undefined>) => {
       state.user = action.payload;
       state.isLoading = false;
     },
