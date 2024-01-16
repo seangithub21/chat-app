@@ -1,17 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  messages: [],
+interface InitialState {
+  messages: any;
+  isLoading: Boolean;
+}
+
+const initialState: InitialState = {
+  messages: {},
   isLoading: false,
 };
 
 const messagesSlice = createSlice({
   name: "messages",
   initialState,
-  reducers: {},
+  reducers: {
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+      state.isLoading = false;
+    },
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+  },
   extraReducers: (builder) => {},
 });
 
-export const {} = messagesSlice.actions;
+export const { setMessages, setLoading } = messagesSlice.actions;
 
 export default messagesSlice.reducer;
