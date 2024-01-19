@@ -14,13 +14,18 @@ import {
 import { db } from "configs/firebase";
 import { ChatUser } from "types";
 
+interface InitialState {
+  chats: any;
+  isLoading: Boolean;
+}
+
 interface InitializeChatParams {
   userId: string;
   companion: ChatUser;
   navigate: NavigateFunction;
 }
 
-const initialState = {
+const initialState: InitialState = {
   chats: {},
   isLoading: false,
 };
