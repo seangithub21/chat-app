@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
 import {
+  DocumentData,
   addDoc,
   and,
   collection,
@@ -20,7 +21,7 @@ interface InitialState {
 }
 
 interface InitializeChatParams {
-  userId: string;
+  user: DocumentData | undefined;
   companion: ChatUser;
   navigate: NavigateFunction;
 }
@@ -33,7 +34,7 @@ const initialState: InitialState = {
 // Create a chat if it doesn't exist and go to the chat page
 export const initializeChat = createAsyncThunk(
   "chats/initializeChat",
-  async ({ userId, companion, navigate }: InitializeChatParams) => {
+  async ({ user, companion, navigate }: InitializeChatParams) => {
     let foundChat: string[] = [];
     const chatsRef = collection(db, "chats");
 
@@ -41,12 +42,12 @@ export const initializeChat = createAsyncThunk(
       chatsRef,
       or(
         and(
-          where("participants.participant1.uid", "==", userId),
+          where("participants.participant1.uid", "==", user?.uid),
           where("participants.participant2.uid", "==", companion.uid)
         ),
         and(
           where("participants.participant1.uid", "==", companion.uid),
-          where("participants.participant2.uid", "==", userId)
+          where("participants.participant2.uid", "==", user?.uid)
         )
       )
     );
@@ -65,8 +66,8 @@ export const initializeChat = createAsyncThunk(
       try {
         const createdChatDocRef = await addDoc(chatsRef, {
           participants: {
-            participant1: { uid: userId },
-            participant2: { uid: companion.uid },
+            participant1: user,
+            participant2: companion,
           },
           timestamp: serverTimestamp(),
         });

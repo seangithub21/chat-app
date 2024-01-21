@@ -5,13 +5,13 @@ import { List, ListItem, ListItemButton, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { getAllUsers, setSearchResults } from "features/contacts/contactsSlice";
 import { initializeChat } from "features/chats/chatsSlice";
-import { getUserData } from "utils/localStorage";
 import { ChatUser } from "types";
 import DebouncedInput from "components/common/DebouncedInput";
 
 const ContactsPage = (): JSX.Element => {
-  const { searchResults, users } = useAppSelector((state) => state.contacts);
   const navigate = useNavigate();
+  const { searchResults, users } = useAppSelector((state) => state.contacts);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -30,9 +30,8 @@ const ContactsPage = (): JSX.Element => {
   };
 
   const handleOpenChat = (companion: ChatUser) => {
-    dispatch(
-      initializeChat({ userId: getUserData().uid, companion, navigate })
-    );
+    dispatch(initializeChat({ user, companion, navigate }));
+    dispatch(setSearchResults([]));
   };
 
   return (
