@@ -1,12 +1,15 @@
 import { JSX } from "react";
-import { ButtonProps, Button as MuiButton } from "@mui/material";
+import { ButtonProps, IconButton, Button as MuiButton } from "@mui/material";
 
 interface ExtendedButtonProps extends ButtonProps {
   onClick?: () => void;
+  isIcon?: Boolean;
 }
 
-const Button = ({ sx, ...props }: ExtendedButtonProps): JSX.Element => {
-  return (
+const Button = ({ sx, isIcon, ...props }: ExtendedButtonProps): JSX.Element => {
+  return isIcon ? (
+    <IconButton sx={sx} {...props} />
+  ) : (
     <MuiButton
       variant="contained"
       sx={{ textTransform: "none", ...sx }}

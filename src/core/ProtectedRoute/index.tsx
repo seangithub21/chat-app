@@ -44,8 +44,8 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
 
   // Subscribe to user's data updates
   useEffect(() => {
-    const { uid } = getUserData();
-    const unsubscribe = onSnapshot(doc(db, `users/${uid}`), (userDoc) => {
+    const userId = getUserData()?.uid;
+    const unsubscribe = onSnapshot(doc(db, `users/${userId}`), (userDoc) => {
       dispatch(setUser(userDoc.data()));
     });
 
@@ -55,27 +55,29 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
 
   // Subscribe to user's chats updates
   useEffect(() => {
-    const userId = getUserData().uid;
-    const chatsQuery = query(
-      collection(db, "chats"),
-      or(
-        where("participants.participant1.uid", "==", userId),
-        where("participants.participant2.uid", "==", userId)
-      )
-    );
+    const userId = getUserData()?.uid;
+    if (userId) {
+      const chatsQuery = query(
+        collection(db, "chats"),
+        or(
+          where("participants.participant1.uid", "==", userId),
+          where("participants.participant2.uid", "==", userId)
+        )
+      );
 
-    const unsubscribe = onSnapshot(chatsQuery, (chatsQuerySnapshot) => {
-      let foundChats: any = {};
-      chatsQuerySnapshot.forEach((chatDoc) => {
-        foundChats[chatDoc.id] = {
-          ...chatDoc.data(),
-          timestamp: chatDoc.data().timestamp?.toDate().toString(),
-        };
+      const unsubscribe = onSnapshot(chatsQuery, (chatsQuerySnapshot) => {
+        let foundChats: any = {};
+        chatsQuerySnapshot.forEach((chatDoc) => {
+          foundChats[chatDoc.id] = {
+            ...chatDoc.data(),
+            timestamp: chatDoc.data().timestamp?.toDate().toString(),
+          };
+        });
+        dispatch(setChats(foundChats));
       });
-      dispatch(setChats(foundChats));
-    });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

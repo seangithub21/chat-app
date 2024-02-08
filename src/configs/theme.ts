@@ -29,6 +29,10 @@ const theme = {
       styleOverrides: {
         html: {
           fontSize: 10,
+          height: "100%",
+          "& body, & #root": {
+            height: "100%",
+          },
         },
       },
     },

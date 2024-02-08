@@ -17,9 +17,9 @@ interface FormData {
 }
 
 const SignUpForm = (): JSX.Element => {
-  const classes = getStyles();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const classes = getStyles();
 
   const handleSubmit = (data: FormData) => {
     dispatch(signUp({ ...data, navigate }));

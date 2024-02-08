@@ -12,7 +12,7 @@ interface InitialState {
 
 interface MessageData {
   data: FormikValues;
-  chatId: string | undefined;
+  chatId: string | undefined | null;
   resetForm: () => void;
 }
 

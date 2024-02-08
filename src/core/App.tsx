@@ -7,6 +7,7 @@ import {
   ThemeProvider,
   CssBaseline,
   LinearProgress,
+  useTheme,
 } from "@mui/material";
 
 import { publicPaths, privatePaths } from "configs/routePaths";
@@ -16,9 +17,6 @@ import ProtectedRoute from "./ProtectedRoute";
 
 const SignUpPage = lazy(() => import("pages/SignUpPage"));
 const LoginPage = lazy(() => import("pages/LoginPage"));
-const ChatsPage = lazy(() => import("pages/ChatsPage"));
-const ChatPage = lazy(() => import("pages/ChatPage"));
-const ContactsPage = lazy(() => import("pages/ContactsPage"));
 
 interface ColorModeContextType {
   toggleColorMode?: () => void;
@@ -32,19 +30,11 @@ const publicRoutes = [
 const privateRoutes = [
   {
     path: privatePaths.chats,
-    Component: <ChatsPage />,
-  },
-  {
-    path: privatePaths.chat,
-    Component: <ChatPage />,
-  },
-  {
-    path: privatePaths.contacts,
-    Component: <ContactsPage />,
+    Component: <ProtectedRoute />,
   },
   {
     path: "*",
-    Component: <div>Page404</div>,
+    Component: <Navigate to={privatePaths.chats} replace />,
   },
 ];
 
@@ -54,7 +44,8 @@ export const ColorModeContext = createContext<ColorModeContextType | null>(
 
 const App = (): JSX.Element => {
   const [themeMode, setThemeMode] = useState<PaletteMode>("light");
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const muiTheme = useTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
 
   const colorMode = useMemo(
     () => ({
@@ -75,6 +66,19 @@ const App = (): JSX.Element => {
         },
         typography: {
           ...(isMobile ? mobile.typography : baseTheme.typography),
+        },
+        components: {
+          ...baseTheme.components,
+          MuiCssBaseline: {
+            styleOverrides: {
+              html: {
+                ...baseTheme.components.MuiCssBaseline.styleOverrides.html,
+                "& #root": {
+                  padding: isMobile ? "0" : "2rem",
+                },
+              },
+            },
+          },
         },
       }),
     [themeMode, isMobile]
@@ -97,7 +101,7 @@ const App = (): JSX.Element => {
               <Route
                 key={route.path}
                 path={route.path}
-                element={<ProtectedRoute>{route.Component}</ProtectedRoute>}
+                element={route.Component}
               />
             ))}
             <Route

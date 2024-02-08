@@ -1,6 +1,5 @@
 import { JSX, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { List, ListItem, ListItemButton, Typography } from "@mui/material";
+import { List, ListItem, ListItemButton } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { getAllUsers, setSearchResults } from "features/contacts/contactsSlice";
@@ -8,8 +7,7 @@ import { initializeChat } from "features/chats/chatsSlice";
 import { ChatUser } from "types";
 import DebouncedInput from "components/common/DebouncedInput";
 
-const ContactsPage = (): JSX.Element => {
-  const navigate = useNavigate();
+const Contacts = (): JSX.Element => {
   const { searchResults, users } = useAppSelector((state) => state.contacts);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -30,15 +28,14 @@ const ContactsPage = (): JSX.Element => {
   };
 
   const handleOpenChat = (companion: ChatUser) => {
-    dispatch(initializeChat({ user, companion, navigate }));
+    dispatch(initializeChat({ user, companion }));
     dispatch(setSearchResults([]));
   };
 
   return (
     <div>
-      <Typography variant="h4">Contacts page</Typography>
       <DebouncedInput label="Search users" handleDebounce={handleSearch} />
-      {searchResults.length > 0 && (
+      {!!searchResults.length && (
         <List>
           {searchResults.map((searchResult: any) => (
             <ListItem key={searchResult.uid}>
@@ -53,4 +50,4 @@ const ContactsPage = (): JSX.Element => {
   );
 };
 
-export default ContactsPage;
+export default Contacts;

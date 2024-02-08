@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { NavigateFunction } from "react-router-dom";
 import {
   DocumentData,
   addDoc,
@@ -14,27 +13,29 @@ import {
 
 import { db } from "configs/firebase";
 import { ChatUser } from "types";
+import { setCurrentChatId } from "utils/localStorage";
 
 interface InitialState {
   chats: any;
+  currentChatId: string | null;
   isLoading: Boolean;
 }
 
 interface InitializeChatParams {
   user: DocumentData | undefined;
   companion: ChatUser;
-  navigate: NavigateFunction;
 }
 
 const initialState: InitialState = {
   chats: {},
+  currentChatId: null,
   isLoading: false,
 };
 
-// Create a chat if it doesn't exist and go to the chat page
+// Create a chat if it doesn't exist and set as current
 export const initializeChat = createAsyncThunk(
   "chats/initializeChat",
-  async ({ user, companion, navigate }: InitializeChatParams) => {
+  async ({ user, companion }: InitializeChatParams) => {
     let foundChat: string[] = [];
     const chatsRef = collection(db, "chats");
 
@@ -61,7 +62,8 @@ export const initializeChat = createAsyncThunk(
     }
 
     if (foundChat[0]) {
-      navigate(`/user/chats/${foundChat[0]}`);
+      setCurrentChatId(foundChat[0]);
+      window.dispatchEvent(new Event("storage"));
     } else {
       try {
         const createdChatDocRef = await addDoc(chatsRef, {
@@ -71,7 +73,8 @@ export const initializeChat = createAsyncThunk(
           },
           timestamp: serverTimestamp(),
         });
-        navigate(`/user/chats/${createdChatDocRef.id}`);
+        setCurrentChatId(createdChatDocRef.id);
+        window.dispatchEvent(new Event("storage"));
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -85,6 +88,10 @@ const chatsSlice = createSlice({
   reducers: {
     setChats: (state, action) => {
       state.chats = action.payload;
+      state.isLoading = false;
+    },
+    setCurrentChatIdState: (state, action) => {
+      state.currentChatId = action.payload;
       state.isLoading = false;
     },
     setLoading: (state, action) => {
@@ -105,6 +112,7 @@ const chatsSlice = createSlice({
   },
 });
 
-export const { setChats, setLoading } = chatsSlice.actions;
+export const { setChats, setCurrentChatIdState, setLoading } =
+  chatsSlice.actions;
 
 export default chatsSlice.reducer;
