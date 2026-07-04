@@ -5,8 +5,8 @@ import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { sendMessage } from "features/messages/messagesSlice";
-import { useAppDispatch } from "hooks/reduxHooks";
-import { getCurrentChatId } from "utils/localStorage";
+import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
+import { getCurrentChatId, getUserData } from "utils/localStorage";
 import Messages from "components/Messages";
 import Input from "components/common/Input";
 import Button from "components/common/Button";
@@ -20,6 +20,7 @@ interface Props {
 const Chat = ({ handleOpenChats }: Props): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { chats, currentChatId } = useAppSelector((state) => state.chats);
   const dispatch = useAppDispatch();
   const classes = getStyles();
 
@@ -37,6 +38,11 @@ const Chat = ({ handleOpenChats }: Props): JSX.Element => {
               <ArrowBackIcon sx={classes.backButton} />
             </Button>
           )}
+          {currentChatId &&
+            (chats[currentChatId]?.participants.participant1.uid ===
+            getUserData().uid
+              ? chats[currentChatId]?.participants.participant2.email
+              : chats[currentChatId]?.participants.participant1.email)}
         </Toolbar>
       </AppBar>
       <div style={classes.messages}>
@@ -62,7 +68,7 @@ const Chat = ({ handleOpenChats }: Props): JSX.Element => {
                 )}
               </Field>
               <Button isIcon type="submit">
-                <SendIcon />
+                <SendIcon fontSize="large" />
               </Button>
             </form>
           )}

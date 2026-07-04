@@ -45,7 +45,7 @@ export const initializeUser = createAsyncThunk(
         uid,
       });
     }
-  }
+  },
 );
 
 export const signUp = createAsyncThunk(
@@ -58,13 +58,13 @@ export const signUp = createAsyncThunk(
           JSON.stringify({
             email: `${userCredential.user.email}`,
             uid: `${userCredential.user.uid}`,
-          })
+          }),
         );
         navigate && navigate(privatePaths.chats);
         return;
-      }
+      },
     );
-  }
+  },
 );
 
 export const login = createAsyncThunk(
@@ -77,13 +77,13 @@ export const login = createAsyncThunk(
           JSON.stringify({
             email: `${userCredential.user.email}`,
             uid: `${userCredential.user.uid}`,
-          })
+          }),
         );
         navigate && navigate(privatePaths.chats);
         return;
-      }
+      },
     );
-  }
+  },
 );
 
 const initialState: InitialState = {

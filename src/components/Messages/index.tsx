@@ -6,28 +6,31 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
+import { Typography } from "@mui/material";
 
 import { setMessages } from "features/messages/messagesSlice";
 import { setCurrentChatIdState } from "features/chats/chatsSlice";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { db } from "configs/firebase";
-import { getCurrentChatId } from "utils/localStorage";
+import { getCurrentChatId, getUserData } from "utils/localStorage";
+
+import getStyles from "./styles";
 
 const Messages = (): JSX.Element => {
   const { messages } = useAppSelector((state) => state.messages);
   const { currentChatId } = useAppSelector((state) => state.chats);
   const dispatch = useAppDispatch();
+  const classes = getStyles();
 
   // Subscribe to current chat's messages updates
   useEffect(() => {
     const messagesQuery = query(
       collection(db, `chats/${currentChatId}/messages`),
       orderBy("timestamp", "desc"),
-      limit(20)
+      limit(20),
     );
 
     const unsubscribe = onSnapshot(messagesQuery, (messagesQuerySnapshot) => {
-      console.log("Messages > useEffect > onSnapshot  > messagesQuery");
       let messages: any = {};
       messagesQuerySnapshot.forEach((messageDoc) => {
         messages[messageDoc.id] = {
@@ -48,10 +51,6 @@ const Messages = (): JSX.Element => {
       const updatedChatId = getCurrentChatId();
       if (updatedChatId) {
         dispatch(setCurrentChatIdState(updatedChatId));
-        console.log(
-          "Messages > useEffect > storage event > updateCurrentChatId: ",
-          updatedChatId
-        );
       }
     };
 
@@ -71,7 +70,16 @@ const Messages = (): JSX.Element => {
         <>
           {Object.keys(messages)
             .map((messageId) => (
-              <div key={messageId}>{messages[messageId].text}</div>
+              <div
+                key={messageId}
+                style={
+                  messages[messageId].createdBy === getUserData().uid
+                    ? classes.container
+                    : {}
+                }
+              >
+                <Typography>{messages[messageId].text}</Typography>
+              </div>
             ))
             .reverse()}
         </>

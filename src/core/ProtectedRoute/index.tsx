@@ -61,8 +61,8 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
         collection(db, "chats"),
         or(
           where("participants.participant1.uid", "==", userId),
-          where("participants.participant2.uid", "==", userId)
-        )
+          where("participants.participant2.uid", "==", userId),
+        ),
       );
 
       const unsubscribe = onSnapshot(chatsQuery, (chatsQuerySnapshot) => {

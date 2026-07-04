@@ -10,7 +10,7 @@ const Input = ({ helperText, field, ...props }: Props): JSX.Element => {
   return (
     <TextField
       size="small"
-      helperText={helperText || " "}
+      helperText={helperText || null}
       {...field}
       {...props}
     />

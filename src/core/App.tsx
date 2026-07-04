@@ -39,7 +39,7 @@ const privateRoutes = [
 ];
 
 export const ColorModeContext = createContext<ColorModeContextType | null>(
-  null
+  null,
 );
 
 const App = (): JSX.Element => {
@@ -53,7 +53,7 @@ const App = (): JSX.Element => {
         setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
       },
     }),
-    []
+    [],
   );
 
   const theme = useMemo(
@@ -62,7 +62,9 @@ const App = (): JSX.Element => {
         ...baseTheme,
         palette: {
           mode: themeMode,
-          ...(themeMode === "light" ? baseTheme.palette : darkMode.palette),
+          ...(themeMode === "light"
+            ? { ...baseTheme.palette, ...muiTheme.palette }
+            : darkMode.palette),
         },
         typography: {
           ...(isMobile ? mobile.typography : baseTheme.typography),
@@ -81,7 +83,7 @@ const App = (): JSX.Element => {
           },
         },
       }),
-    [themeMode, isMobile]
+    [themeMode, isMobile],
   );
 
   return (

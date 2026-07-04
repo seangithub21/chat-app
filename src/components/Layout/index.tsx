@@ -16,14 +16,16 @@ const Layout = ({ children }: Props): JSX.Element => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = getStyles({ isMobile });
 
+  const responsiveSpacing = isMobile ? 0 : 2;
+
   const handleOpenChats = () => {
     setChatsOpen((state) => !state);
   };
 
   return (
     <div style={classes.layout}>
-      {isMobile ? (
-        <Grid container sx={classes.container}>
+      <Grid container spacing={responsiveSpacing} sx={classes.container}>
+        {isMobile ? (
           <Grid item xs={12}>
             <SwipeableDrawer
               anchor="left"
@@ -35,17 +37,17 @@ const Layout = ({ children }: Props): JSX.Element => {
             </SwipeableDrawer>
             <Chat handleOpenChats={handleOpenChats} />
           </Grid>
-        </Grid>
-      ) : (
-        <Grid container spacing={2} sx={classes.container}>
-          <Grid item xs={4} lg={3}>
-            <ChatsList />
-          </Grid>
-          <Grid item xs={8} lg={9}>
-            <Chat handleOpenChats={handleOpenChats} />
-          </Grid>
-        </Grid>
-      )}
+        ) : (
+          <>
+            <Grid item xs={4} lg={3}>
+              <ChatsList />
+            </Grid>
+            <Grid item xs={8} lg={9}>
+              <Chat handleOpenChats={handleOpenChats} />
+            </Grid>
+          </>
+        )}
+      </Grid>
     </div>
   );
 };

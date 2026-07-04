@@ -6,8 +6,14 @@ import { getAllUsers, setSearchResults } from "features/contacts/contactsSlice";
 import { initializeChat } from "features/chats/chatsSlice";
 import { ChatUser } from "types";
 import DebouncedInput from "components/common/DebouncedInput";
+import Modal from "components/common/Modal";
 
-const Contacts = (): JSX.Element => {
+interface Props {
+  open: boolean;
+  handleClose: () => void;
+}
+
+const Contacts = ({ open, handleClose }: Props): JSX.Element => {
   const { searchResults, users } = useAppSelector((state) => state.contacts);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -33,20 +39,22 @@ const Contacts = (): JSX.Element => {
   };
 
   return (
-    <div>
-      <DebouncedInput label="Search users" handleDebounce={handleSearch} />
-      {!!searchResults.length && (
-        <List>
-          {searchResults.map((searchResult: any) => (
-            <ListItem key={searchResult.uid}>
-              <ListItemButton onClick={() => handleOpenChat(searchResult)}>
-                {searchResult.email}
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      )}
-    </div>
+    <Modal open={open} onClose={handleClose}>
+      <div>
+        <DebouncedInput label="Search users" handleDebounce={handleSearch} />
+        {!!searchResults.length && (
+          <List>
+            {searchResults.map((searchResult: any) => (
+              <ListItem key={searchResult.uid}>
+                <ListItemButton onClick={() => handleOpenChat(searchResult)}>
+                  {searchResult.email}
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </div>
+    </Modal>
   );
 };
 
