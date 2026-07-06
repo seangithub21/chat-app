@@ -1,5 +1,5 @@
 import { JSX, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { doc, onSnapshot } from "firebase/firestore";
 
 import { setUser } from "features/auth/authSlice";

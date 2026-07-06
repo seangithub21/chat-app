@@ -23,7 +23,7 @@ import { auth } from "configs/firebase";
 import baseTheme, { darkMode, mobile } from "configs/theme";
 import { publicPaths, privatePaths } from "configs/routePaths";
 import { setUser } from "features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
+import { useAppDispatch } from "hooks/reduxHooks";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 

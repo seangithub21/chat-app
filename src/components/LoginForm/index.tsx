@@ -1,11 +1,11 @@
 import { JSX } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Formik, Field, FieldProps } from "formik";
 import { Typography } from "@mui/material";
 
 import Input from "components/common/Input";
 import Button from "components/common/Button";
-import { privatePaths, publicPaths } from "configs/routePaths";
+import { publicPaths } from "configs/routePaths";
 import { login } from "features/auth/authSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
 
@@ -18,7 +18,6 @@ interface FormData {
 
 const LoginForm = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const classes = getStyles();
 
   const handleSubmit = (data: FormData) => {
