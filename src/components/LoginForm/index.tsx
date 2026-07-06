@@ -3,11 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Formik, Field, FieldProps } from "formik";
 import { Typography } from "@mui/material";
 
-import { publicPaths } from "configs/routePaths";
-import { login } from "features/auth/authSlice";
-import { useAppDispatch } from "hooks/reduxHooks";
 import Input from "components/common/Input";
 import Button from "components/common/Button";
+import { privatePaths, publicPaths } from "configs/routePaths";
+import { login } from "features/auth/authSlice";
+import { useAppDispatch } from "hooks/reduxHooks";
 
 import getStyles from "./styles";
 
@@ -22,7 +22,7 @@ const LoginForm = (): JSX.Element => {
   const classes = getStyles();
 
   const handleSubmit = (data: FormData) => {
-    dispatch(login({ ...data, navigate }));
+    dispatch(login({ ...data }));
   };
 
   return (
@@ -49,7 +49,7 @@ const LoginForm = (): JSX.Element => {
           </form>
         )}
       </Formik>
-      <Link to={publicPaths.signup}>Or sign up</Link>
+      <Link to={publicPaths.register}>Or register</Link>
     </div>
   );
 };

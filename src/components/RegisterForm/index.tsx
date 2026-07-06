@@ -1,13 +1,13 @@
 import { JSX } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Formik, Field, FieldProps } from "formik";
 import { Typography } from "@mui/material";
 
-import { publicPaths } from "configs/routePaths";
-import { signUp } from "features/auth/authSlice";
-import { useAppDispatch } from "hooks/reduxHooks";
-import Input from "components/common/Input";
 import Button from "components/common/Button";
+import Input from "components/common/Input";
+import { publicPaths } from "configs/routePaths";
+import { register } from "features/auth/authSlice";
+import { useAppDispatch } from "hooks/reduxHooks";
 
 import getStyles from "./styles";
 
@@ -16,18 +16,17 @@ interface FormData {
   password: string;
 }
 
-const SignUpForm = (): JSX.Element => {
+const RegisterForm = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const classes = getStyles();
 
   const handleSubmit = (data: FormData) => {
-    dispatch(signUp({ ...data, navigate }));
+    dispatch(register({ ...data }));
   };
 
   return (
     <div style={classes.container}>
-      <Typography variant="h4">Sign up</Typography>
+      <Typography variant="h4">Register</Typography>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -45,7 +44,7 @@ const SignUpForm = (): JSX.Element => {
                 <Input field={field} label="Password" fullWidth />
               )}
             </Field>
-            <Button type="submit">Sign up</Button>
+            <Button type="submit">Regsiter</Button>
           </form>
         )}
       </Formik>
@@ -54,4 +53,4 @@ const SignUpForm = (): JSX.Element => {
   );
 };
 
-export default SignUpForm;
+export default RegisterForm;

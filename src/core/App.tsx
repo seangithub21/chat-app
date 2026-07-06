@@ -1,5 +1,13 @@
-import { JSX, useState, useMemo, createContext, Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import {
+  JSX,
+  useState,
+  useMemo,
+  createContext,
+  Suspense,
+  lazy,
+  useEffect,
+} from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import {
   useMediaQuery,
   createTheme,
@@ -9,13 +17,17 @@ import {
   LinearProgress,
   useTheme,
 } from "@mui/material";
+import { onAuthStateChanged } from "firebase/auth";
 
-import { publicPaths, privatePaths } from "configs/routePaths";
+import { auth } from "configs/firebase";
 import baseTheme, { darkMode, mobile } from "configs/theme";
-import PublicRoute from "./PublicRoute";
+import { publicPaths, privatePaths } from "configs/routePaths";
+import { setUser } from "features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
-const SignUpPage = lazy(() => import("pages/SignUpPage"));
+const RegisterPage = lazy(() => import("pages/RegisterPage"));
 const LoginPage = lazy(() => import("pages/LoginPage"));
 
 interface ColorModeContextType {
@@ -23,7 +35,7 @@ interface ColorModeContextType {
 }
 
 const publicRoutes = [
-  { path: publicPaths.signup, Component: <SignUpPage /> },
+  { path: publicPaths.register, Component: <RegisterPage /> },
   { path: publicPaths.login, Component: <LoginPage /> },
 ];
 
@@ -32,20 +44,18 @@ const privateRoutes = [
     path: privatePaths.chats,
     Component: <ProtectedRoute />,
   },
-  {
-    path: "*",
-    Component: <Navigate to={privatePaths.chats} replace />,
-  },
 ];
 
 export const ColorModeContext = createContext<ColorModeContextType | null>(
-  null
+  null,
 );
 
 const App = (): JSX.Element => {
   const [themeMode, setThemeMode] = useState<PaletteMode>("light");
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const colorMode = useMemo(
     () => ({
@@ -53,7 +63,7 @@ const App = (): JSX.Element => {
         setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
       },
     }),
-    []
+    [],
   );
 
   const theme = useMemo(
@@ -81,8 +91,22 @@ const App = (): JSX.Element => {
           },
         },
       }),
-    [themeMode, isMobile]
+    [themeMode, isMobile],
   );
+
+  // Subscribe to user's Firebase auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        dispatch(setUser(null));
+      } else {
+        navigate(privatePaths.chats);
+      }
+    });
+
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ColorModeContext.Provider value={colorMode}>

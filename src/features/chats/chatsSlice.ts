@@ -22,7 +22,7 @@ interface InitialState {
 }
 
 interface InitializeChatParams {
-  user: DocumentData | undefined;
+  user: DocumentData | undefined | null;
   companion: ChatUser;
 }
 
@@ -44,13 +44,13 @@ export const initializeChat = createAsyncThunk(
       or(
         and(
           where("participants.participant1.uid", "==", user?.uid),
-          where("participants.participant2.uid", "==", companion.uid)
+          where("participants.participant2.uid", "==", companion.uid),
         ),
         and(
           where("participants.participant1.uid", "==", companion.uid),
-          where("participants.participant2.uid", "==", user?.uid)
-        )
-      )
+          where("participants.participant2.uid", "==", user?.uid),
+        ),
+      ),
     );
     try {
       const chatQuerySnapshot = await getDocs(chatQuery);
@@ -79,7 +79,7 @@ export const initializeChat = createAsyncThunk(
         throw new Error(`${error}`);
       }
     }
-  }
+  },
 );
 
 const chatsSlice = createSlice({

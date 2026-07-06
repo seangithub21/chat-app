@@ -1,93 +1,60 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { NavigateFunction } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { DocumentData, doc, getDoc, setDoc } from "firebase/firestore";
 
-import { privatePaths } from "configs/routePaths";
 import { db, auth } from "configs/firebase";
-import { USER_DATA } from "constants/localStorage";
 
 interface InitialState {
-  user: DocumentData | undefined;
+  user: DocumentData | undefined | null;
   isLoading: Boolean;
+}
+
+interface RegisterParams {
+  email: string;
+  password: string;
 }
 
 interface LoginParams {
   email: string;
   password: string;
-  navigate?: NavigateFunction;
 }
 
-interface SignUpParams {
-  email: string;
-  password: string;
-  navigate?: NavigateFunction;
-}
-
-interface InitializeUserParams {
-  email?: string | null;
-  uid?: string;
-}
-
-// Create a user document and set to users collection
-export const initializeUser = createAsyncThunk(
-  "auth/initializeUser",
-  async ({ uid, email }: InitializeUserParams) => {
-    const userDocRef = doc(db, `users/${uid}`);
-    const userDocSnap = await getDoc(userDocRef);
-    if (!userDocSnap.exists()) {
-      return setDoc(userDocRef, {
-        email,
-        settings: {},
-        uid,
-      });
-    }
-  }
-);
-
-export const signUp = createAsyncThunk(
-  "auth/signUp",
-  ({ email, password, navigate }: SignUpParams) => {
+export const register = createAsyncThunk(
+  "auth/register",
+  ({ email, password }: RegisterParams) => {
     createUserWithEmailAndPassword(auth, email, password).then(
-      (userCredential) => {
-        localStorage.setItem(
-          USER_DATA,
-          JSON.stringify({
-            email: `${userCredential.user.email}`,
-            uid: `${userCredential.user.uid}`,
-          })
-        );
-        navigate && navigate(privatePaths.chats);
+      async (userCredential) => {
+        // Create a user document and set to users collection if does not exist yet
+        const userDocRef = doc(db, `users/${userCredential.user.uid}`);
+        const userDocSnap = await getDoc(userDocRef);
+        if (!userDocSnap.exists()) {
+          return setDoc(userDocRef, {
+            email,
+            settings: {},
+          });
+        }
         return;
-      }
+      },
     );
-  }
+  },
 );
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password, navigate }: LoginParams) => {
+  async ({ email, password }: LoginParams) => {
     return signInWithEmailAndPassword(auth, email, password).then(
       (userCredential) => {
-        localStorage.setItem(
-          USER_DATA,
-          JSON.stringify({
-            email: `${userCredential.user.email}`,
-            uid: `${userCredential.user.uid}`,
-          })
-        );
-        navigate && navigate(privatePaths.chats);
         return;
-      }
+      },
     );
-  }
+  },
 );
 
 const initialState: InitialState = {
-  user: {},
+  user: null,
   isLoading: false,
 };
 
@@ -95,7 +62,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<DocumentData | undefined>) => {
+    setUser: (
+      state,
+      action: PayloadAction<DocumentData | undefined | null>,
+    ) => {
       state.user = action.payload;
       state.isLoading = false;
     },
@@ -104,16 +74,6 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(initializeUser.pending, (state, action) => {
-      state.isLoading = true;
-    });
-    builder.addCase(initializeUser.fulfilled, (state, action) => {
-      state.isLoading = false;
-    });
-    builder.addCase(initializeUser.rejected, (state, action) => {
-      console.error(action.error.message);
-      state.isLoading = false;
-    });
     builder.addCase(login.pending, (state, action) => {
       state.isLoading = true;
     });
@@ -124,13 +84,13 @@ const authSlice = createSlice({
       console.error(action.error.message);
       state.isLoading = false;
     });
-    builder.addCase(signUp.pending, (state, action) => {
+    builder.addCase(register.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(signUp.fulfilled, (state, action) => {
+    builder.addCase(register.fulfilled, (state, action) => {
       state.isLoading = false;
     });
-    builder.addCase(signUp.rejected, (state, action) => {
+    builder.addCase(register.rejected, (state, action) => {
       console.error(action.error.message);
       state.isLoading = false;
     });

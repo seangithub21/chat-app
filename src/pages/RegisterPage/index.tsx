@@ -1,17 +1,17 @@
 import { JSX } from "react";
 
-import SignUpForm from "components/SignUpForm";
+import RegisterForm from "components/RegisterForm";
 
 import getStyles from "./styles";
 
-const SignUpPage = (): JSX.Element => {
+const RegisterPage = (): JSX.Element => {
   const classes = getStyles();
 
   return (
     <div style={classes.container}>
-      <SignUpForm />
+      <RegisterForm />
     </div>
   );
 };
 
-export default SignUpPage;
+export default RegisterPage;
