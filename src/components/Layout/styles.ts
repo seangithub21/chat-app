@@ -7,7 +7,6 @@ const getStyles = ({ isMobile }: Props) => ({
     height: "100%",
     maxWidth: "1920px",
     margin: "auto",
-    padding: isMobile ? "0" : "2rem",
     overflow: "hidden",
   },
   container: {

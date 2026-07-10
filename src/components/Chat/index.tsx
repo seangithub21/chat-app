@@ -1,23 +1,23 @@
-import { JSX } from "react";
+import { Dispatch, JSX, SetStateAction } from "react";
 import { Field, FieldProps, Formik, FormikValues } from "formik";
 import { AppBar, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import Button from "components/common/Button";
+import Input from "components/common/Input";
+import Messages from "components/Messages";
 import { sendMessage } from "features/messages/messagesSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { getCurrentChatId } from "utils/localStorage";
-import Messages from "components/Messages";
-import Input from "components/common/Input";
-import Button from "components/common/Button";
+import { getCurrentChatId, setCurrentChatId } from "utils/sessionStorage";
 
 import getStyles from "./styles";
 
 interface Props {
-  handleOpenChats: () => void;
+  setCurrentChatOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-const Chat = ({ handleOpenChats }: Props): JSX.Element => {
+const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useAppDispatch();
@@ -28,12 +28,19 @@ const Chat = ({ handleOpenChats }: Props): JSX.Element => {
       dispatch(sendMessage({ data, chatId: getCurrentChatId(), resetForm }));
   };
 
+  const handleCloseChat = () => {
+    if (isMobile) {
+      setCurrentChatId("");
+      setCurrentChatOpen && setCurrentChatOpen(false);
+    }
+  };
+
   return (
     <div style={classes.container}>
       <AppBar position="static">
         <Toolbar>
           {isMobile && (
-            <Button isIcon onClick={handleOpenChats}>
+            <Button isIcon onClick={handleCloseChat}>
               <ArrowBackIcon sx={classes.backButton} />
             </Button>
           )}

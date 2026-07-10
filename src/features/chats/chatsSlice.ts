@@ -13,7 +13,7 @@ import {
 
 import { db } from "configs/firebase";
 import { ChatUser } from "types";
-import { setCurrentChatId } from "utils/localStorage";
+import { setCurrentChatId } from "utils/sessionStorage";
 
 interface InitialState {
   chats: any;

@@ -3,7 +3,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { FormikValues } from "formik";
 
 import { db } from "configs/firebase";
-import { getUserData } from "utils/localStorage";
+import { getUserData } from "utils/sessionStorage";
 
 interface InitialState {
   messages: any;
@@ -29,7 +29,7 @@ export const sendMessage = createAsyncThunk(
     } catch (error) {
       throw new Error(`${error}`);
     }
-  }
+  },
 );
 
 const initialState: InitialState = {

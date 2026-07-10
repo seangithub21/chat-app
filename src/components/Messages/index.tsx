@@ -7,11 +7,11 @@ import {
   query,
 } from "firebase/firestore";
 
+import { db } from "configs/firebase";
 import { setMessages } from "features/messages/messagesSlice";
 import { setCurrentChatIdState } from "features/chats/chatsSlice";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
-import { db } from "configs/firebase";
-import { getCurrentChatId } from "utils/localStorage";
+import { getCurrentChatId } from "utils/sessionStorage";
 
 const Messages = (): JSX.Element => {
   const { messages } = useAppSelector((state) => state.messages);
@@ -23,7 +23,7 @@ const Messages = (): JSX.Element => {
     const messagesQuery = query(
       collection(db, `chats/${currentChatId}/messages`),
       orderBy("timestamp", "desc"),
-      limit(20)
+      limit(20),
     );
 
     const unsubscribe = onSnapshot(messagesQuery, (messagesQuerySnapshot) => {
@@ -50,7 +50,7 @@ const Messages = (): JSX.Element => {
         dispatch(setCurrentChatIdState(updatedChatId));
         console.log(
           "Messages > useEffect > storage event > updateCurrentChatId: ",
-          updatedChatId
+          updatedChatId,
         );
       }
     };
