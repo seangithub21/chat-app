@@ -9,12 +9,12 @@ import Input from "components/common/Input";
 import Messages from "components/Messages";
 import { sendMessage } from "features/messages/messagesSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { getCurrentChatId, setCurrentChatId } from "utils/sessionStorage";
+import { getCurrentChatId } from "utils/sessionStorage";
 
 import getStyles from "./styles";
 
 interface Props {
-  setCurrentChatOpen?: Dispatch<SetStateAction<boolean>>;
+  setCurrentChatOpen?: Dispatch<SetStateAction<string>>;
 }
 
 const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
@@ -28,12 +28,8 @@ const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
       dispatch(sendMessage({ data, chatId: getCurrentChatId(), resetForm }));
   };
 
-  const handleCloseChat = () => {
-    if (isMobile) {
-      setCurrentChatId("");
-      setCurrentChatOpen && setCurrentChatOpen(false);
-    }
-  };
+  const handleCloseChat = () =>
+    isMobile && setCurrentChatOpen && setCurrentChatOpen("");
 
   return (
     <div style={classes.container}>

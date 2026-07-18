@@ -1,5 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "firebase/firestore";
 import { FormikValues } from "formik";
 
 import { db } from "configs/firebase";
@@ -7,7 +15,7 @@ import { getUserData } from "utils/sessionStorage";
 
 interface InitialState {
   messages: any;
-  isLoading: Boolean;
+  isLoading: boolean;
 }
 
 interface MessageData {
@@ -15,6 +23,33 @@ interface MessageData {
   chatId: string | undefined | null;
   resetForm: () => void;
 }
+
+export const getMessages = createAsyncThunk(
+  "messages/getMessages",
+  async (chatId: string | undefined | null) => {
+    if (chatId) {
+      const messagesQuery = query(
+        collection(db, `chats/${chatId}/messages`),
+        orderBy("timestamp", "desc"),
+        limit(20),
+      );
+
+      try {
+        const messages: any = {};
+        const messagesQuerySnapshot = await getDocs(messagesQuery);
+        messagesQuerySnapshot.forEach((messageDoc) => {
+          messages[messageDoc.id] = {
+            ...messageDoc.data(),
+            timestamp: messageDoc.data().timestamp?.toDate().toString(),
+          };
+        });
+        return messages;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    }
+  },
+);
 
 export const sendMessage = createAsyncThunk(
   "messages/sendMessage",
@@ -33,7 +68,7 @@ export const sendMessage = createAsyncThunk(
 );
 
 const initialState: InitialState = {
-  messages: {},
+  messages: null,
   isLoading: false,
 };
 
@@ -50,6 +85,17 @@ const messagesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(getMessages.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getMessages.fulfilled, (state, action) => {
+      state.messages = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getMessages.rejected, (state, action) => {
+      console.error(action.error);
+      state.isLoading = false;
+    });
     builder.addCase(sendMessage.pending, (state, action) => {
       state.isLoading = true;
     });

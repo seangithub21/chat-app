@@ -1,38 +1,36 @@
-import { JSX, useEffect, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { Grid, SwipeableDrawer, useMediaQuery, useTheme } from "@mui/material";
 
 import Chat from "components/Chat";
 import ChatsList from "components/ChatsList";
-import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
-import { getCurrentChatId, setCurrentChatId } from "utils/sessionStorage";
 
 import getStyles from "./styles";
 
 interface Props {
   children?: JSX.Element;
+  currentChatOpen: string;
+  setCurrentChatOpen: Dispatch<SetStateAction<string>>;
 }
 
-const Layout = ({ children }: Props): JSX.Element => {
+const Layout = ({
+  children,
+  currentChatOpen,
+  setCurrentChatOpen,
+}: Props): JSX.Element => {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
-  const [currentChatOpen, setCurrentChatOpen] = useState<boolean>(false);
+  // const [currentChatOpen, setCurrentChatOpen] = useState<boolean>(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = getStyles({ isMobile });
 
-  // Open chat on page refresh if chatId exists in sessionStorage
-  useEffect(() => {
-    console.log("Layout > useEffect");
-    if (getCurrentChatId()) {
-      setCurrentChatOpen(true);
-    }
-  }, []);
+  // Open chat on page reload if chatId exists in sessionStorage
+  // useEffect(() => {
+  //   if (getCurrentChatId()) setCurrentChatOpen(true);
+  // }, []);
 
   const handleOpenSideMenu = () => setSideMenuOpen((state) => !state);
 
-  const handleCloseChat = () => {
-    setCurrentChatId("");
-    setCurrentChatOpen(false);
-  };
+  const handleCloseChat = () => isMobile && setCurrentChatOpen("");
 
   return (
     <div style={classes.layout}>
@@ -58,7 +56,7 @@ const Layout = ({ children }: Props): JSX.Element => {
             />
             <SwipeableDrawer
               anchor="right"
-              open={currentChatOpen}
+              open={currentChatOpen ? true : false}
               onOpen={() => {}}
               onClose={handleCloseChat}
               sx={{
