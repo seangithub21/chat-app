@@ -25,7 +25,9 @@ const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
 
   const handleSubmitMessage = (data: FormikValues, { resetForm }: any) => {
     data.message &&
-      dispatch(sendMessage({ data, chatId: getCurrentChatId(), resetForm }));
+      dispatch(sendMessage({ data, chatId: getCurrentChatId() })).then(() =>
+        resetForm(),
+      );
   };
 
   const handleCloseChat = () =>

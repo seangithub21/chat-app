@@ -26,7 +26,6 @@ interface Props {
 const ProtectedRoute = ({ children }: Props): JSX.Element => {
   const [currentChatOpen, setCurrentChatOpen] = useState<string>("");
   const { user: reduxUser } = useAppSelector((state) => state.auth);
-  const { messages: reduxMessages } = useAppSelector((state) => state.messages);
   const dispatch = useAppDispatch();
 
   // Subscribe to user document updates
@@ -76,7 +75,6 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
         orderBy("timestamp", "desc"),
         limit(10),
       );
-
       const unsubscribe = onSnapshot(messagesQuery, (messagesQuerySnapshot) => {
         let messages: any = {};
         messagesQuerySnapshot.forEach((messageDoc) => {
@@ -85,8 +83,7 @@ const ProtectedRoute = ({ children }: Props): JSX.Element => {
             timestamp: messageDoc.data().timestamp?.toDate().toString(),
           };
         });
-        // setMessages only on page reload
-        !reduxMessages && dispatch(setMessages(messages));
+        dispatch(setMessages(messages));
       });
 
       return () => unsubscribe();

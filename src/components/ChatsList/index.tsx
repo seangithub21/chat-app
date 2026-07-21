@@ -5,8 +5,7 @@ import { AppBar, List, ListItem, ListItemButton, Toolbar } from "@mui/material";
 
 import Button from "components/common/Button";
 import { auth } from "configs/firebase";
-import { getMessages } from "features/messages/messagesSlice";
-import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
+import { useAppSelector } from "hooks/reduxHooks";
 import { getCurrentChatId, setCurrentChatId } from "utils/sessionStorage";
 
 interface Props {
@@ -19,18 +18,13 @@ const ChatsList = ({
   setCurrentChatOpen,
 }: Props): JSX.Element => {
   const { chats } = useAppSelector((state) => state.chats);
-  const dispatch = useAppDispatch();
 
   const handleOpenChat = (chatId: string) => {
     const currentChatId = getCurrentChatId() || "";
     if (!currentChatId || currentChatId !== chatId) {
-      dispatch(getMessages(chatId)).then(() => {
-        setCurrentChatId(chatId);
-        setCurrentChatOpen(chatId);
-      });
-    } else {
-      setCurrentChatOpen(chatId);
+      setCurrentChatId(chatId);
     }
+    setCurrentChatOpen(chatId);
   };
 
   return (
@@ -45,7 +39,7 @@ const ChatsList = ({
       {!!Object.keys(chats).length ? (
         <List>
           {Object.keys(chats).map((id: string, index: number) => {
-            let chatWith = chats[id].participantEmails.filter(
+            let chatWith = chats[id].participantEmails?.filter(
               (email: string) => email !== auth.currentUser?.email,
             )[0];
 

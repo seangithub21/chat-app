@@ -1,17 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  serverTimestamp,
-} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { FormikValues } from "formik";
 
-import { db } from "configs/firebase";
-import { getUserData } from "utils/sessionStorage";
+import { auth, db } from "configs/firebase";
 
 interface InitialState {
   messages: any;
@@ -21,46 +12,18 @@ interface InitialState {
 interface MessageData {
   data: FormikValues;
   chatId: string | undefined | null;
-  resetForm: () => void;
 }
-
-export const getMessages = createAsyncThunk(
-  "messages/getMessages",
-  async (chatId: string | undefined | null) => {
-    if (chatId) {
-      const messagesQuery = query(
-        collection(db, `chats/${chatId}/messages`),
-        orderBy("timestamp", "desc"),
-        limit(20),
-      );
-
-      try {
-        const messages: any = {};
-        const messagesQuerySnapshot = await getDocs(messagesQuery);
-        messagesQuerySnapshot.forEach((messageDoc) => {
-          messages[messageDoc.id] = {
-            ...messageDoc.data(),
-            timestamp: messageDoc.data().timestamp?.toDate().toString(),
-          };
-        });
-        return messages;
-      } catch (error) {
-        throw new Error(`${error}`);
-      }
-    }
-  },
-);
 
 export const sendMessage = createAsyncThunk(
   "messages/sendMessage",
-  async ({ data, chatId, resetForm }: MessageData) => {
+  async ({ data, chatId }: MessageData) => {
     try {
       await addDoc(collection(db, `chats/${chatId}/messages`), {
         text: data.message,
+        // NOTE: serverTimestamp() is causing onSnapshot() to run twice
         timestamp: serverTimestamp(),
-        createdBy: getUserData().uid,
+        createdBy: auth.currentUser?.uid,
       });
-      resetForm && resetForm();
     } catch (error) {
       throw new Error(`${error}`);
     }
@@ -78,24 +41,12 @@ const messagesSlice = createSlice({
   reducers: {
     setMessages: (state, action) => {
       state.messages = action.payload;
-      state.isLoading = false;
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getMessages.pending, (state, action) => {
-      state.isLoading = true;
-    });
-    builder.addCase(getMessages.fulfilled, (state, action) => {
-      state.messages = action.payload;
-      state.isLoading = false;
-    });
-    builder.addCase(getMessages.rejected, (state, action) => {
-      console.error(action.error);
-      state.isLoading = false;
-    });
     builder.addCase(sendMessage.pending, (state, action) => {
       state.isLoading = true;
     });
