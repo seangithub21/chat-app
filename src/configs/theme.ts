@@ -14,7 +14,7 @@ const theme = {
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
-    h4: {
+    h2: {
       fontWeight: 600,
     },
     body1: {
@@ -33,6 +33,13 @@ const theme = {
           "& body, & #root": {
             height: "100%",
           },
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        message: {
+          fontSize: "1.4rem",
         },
       },
     },

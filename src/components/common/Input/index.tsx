@@ -6,11 +6,17 @@ type Props = {
   field?: FieldInputProps<any>;
 } & TextFieldProps;
 
-const Input = ({ helperText, field, ...props }: Props): JSX.Element => {
+const Input = ({
+  helperText,
+  field,
+  variant,
+  ...props
+}: Props): JSX.Element => {
   return (
     <TextField
-      size="small"
       helperText={helperText || " "}
+      size="small"
+      variant={variant || "standard"}
       {...field}
       {...props}
     />

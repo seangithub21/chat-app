@@ -26,7 +26,9 @@ const RegisterForm = (): JSX.Element => {
 
   return (
     <div style={classes.container}>
-      <Typography variant="h4">Register</Typography>
+      <Typography variant="h2" sx={classes.heading}>
+        Register
+      </Typography>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -44,11 +46,15 @@ const RegisterForm = (): JSX.Element => {
                 <Input field={field} label="Password" fullWidth />
               )}
             </Field>
-            <Button type="submit">Regsiter</Button>
+            <Button type="submit" fullWidth sx={{ margin: "2rem 0" }}>
+              Register
+            </Button>
           </form>
         )}
       </Formik>
-      <Link to={publicPaths.login}>Or log in</Link>
+      <div style={{ textAlign: "center" }}>
+        <Link to={publicPaths.login}>Or login</Link>
+      </div>
     </div>
   );
 };

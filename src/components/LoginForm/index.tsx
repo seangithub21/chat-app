@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { Link } from "react-router-dom";
 import { Formik, Field, FieldProps } from "formik";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 
 import Input from "components/common/Input";
 import Button from "components/common/Button";
@@ -26,7 +26,14 @@ const LoginForm = (): JSX.Element => {
 
   return (
     <div style={classes.container}>
-      <Typography variant="h4">Log in</Typography>
+      <Typography variant="h2" sx={classes.heading}>
+        Login
+      </Typography>
+      <Alert severity="info" sx={{ marginBottom: "2rem" }}>
+        For demo please use credentials:
+        <div>&#x2022; Email: {process.env.REACT_APP_EMAIL_DEMO}</div>
+        <div>&#x2022; Password: {process.env.REACT_APP_PASSWORD_DEMO}</div>
+      </Alert>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -44,11 +51,15 @@ const LoginForm = (): JSX.Element => {
                 <Input field={field} label="Password" fullWidth />
               )}
             </Field>
-            <Button type="submit">Login</Button>
+            <Button type="submit" fullWidth sx={{ margin: "2rem 0" }}>
+              Login
+            </Button>
           </form>
         )}
       </Formik>
-      <Link to={publicPaths.register}>Or register</Link>
+      <div style={{ textAlign: "center" }}>
+        <Link to={publicPaths.register}>Or register</Link>
+      </div>
     </div>
   );
 };

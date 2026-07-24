@@ -3,8 +3,9 @@ const getStyles = () => ({
     alignItems: "center",
     display: "flex",
     flexDirection: "column" as const,
-    minHeight: "100vh",
     justifyContent: "center",
+    minHeight: "100%",
+    padding: "3rem",
   },
 });
 
