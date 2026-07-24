@@ -1,19 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  DocumentData,
-  addDoc,
-  and,
-  collection,
-  getDocs,
-  or,
-  query,
-  serverTimestamp,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-import { db } from "configs/firebase";
+import { auth, db } from "configs/firebase";
 import { ChatUser } from "types";
-import { setCurrentChatId } from "utils/sessionStorage";
 
 interface InitialState {
   chats: any;
@@ -21,9 +10,8 @@ interface InitialState {
   isLoading: Boolean;
 }
 
-interface InitializeChatParams {
-  user: DocumentData | undefined | null;
-  companion: ChatUser;
+interface StartChatParams {
+  chatWith: ChatUser;
 }
 
 const initialState: InitialState = {
@@ -33,51 +21,18 @@ const initialState: InitialState = {
 };
 
 // Create a chat if it doesn't exist and set as current
-export const initializeChat = createAsyncThunk(
-  "chats/initializeChat",
-  async ({ user, companion }: InitializeChatParams) => {
-    let foundChat: string[] = [];
+export const startChat = createAsyncThunk(
+  "chats/startChat",
+  async ({ chatWith }: StartChatParams) => {
     const chatsRef = collection(db, "chats");
-
-    const chatQuery = query(
-      chatsRef,
-      or(
-        and(
-          where("participants.participant1.uid", "==", user?.uid),
-          where("participants.participant2.uid", "==", companion.uid),
-        ),
-        and(
-          where("participants.participant1.uid", "==", companion.uid),
-          where("participants.participant2.uid", "==", user?.uid),
-        ),
-      ),
-    );
     try {
-      const chatQuerySnapshot = await getDocs(chatQuery);
-      chatQuerySnapshot.forEach((chatDoc) => {
-        foundChat.push(chatDoc.id);
-      });
+      return await addDoc(chatsRef, {
+        participantEmails: [auth.currentUser?.email, chatWith.email],
+        participantIds: [auth.currentUser?.uid, chatWith.uid],
+        timestamp: serverTimestamp(),
+      }).then((docRef) => docRef.id);
     } catch (error) {
       throw new Error(`${error}`);
-    }
-
-    if (foundChat[0]) {
-      setCurrentChatId(foundChat[0]);
-      window.dispatchEvent(new Event("storage"));
-    } else {
-      try {
-        const createdChatDocRef = await addDoc(chatsRef, {
-          participants: {
-            participant1: user,
-            participant2: companion,
-          },
-          timestamp: serverTimestamp(),
-        });
-        setCurrentChatId(createdChatDocRef.id);
-        window.dispatchEvent(new Event("storage"));
-      } catch (error) {
-        throw new Error(`${error}`);
-      }
     }
   },
 );
@@ -90,29 +45,24 @@ const chatsSlice = createSlice({
       state.chats = action.payload;
       state.isLoading = false;
     },
-    setCurrentChatIdState: (state, action) => {
-      state.currentChatId = action.payload;
-      state.isLoading = false;
-    },
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(initializeChat.pending, (state, action) => {
+    builder.addCase(startChat.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(initializeChat.fulfilled, (state, action) => {
+    builder.addCase(startChat.fulfilled, (state, action) => {
       state.isLoading = false;
     });
-    builder.addCase(initializeChat.rejected, (state, action) => {
+    builder.addCase(startChat.rejected, (state, action) => {
       console.error(action.error);
       state.isLoading = false;
     });
   },
 });
 
-export const { setChats, setCurrentChatIdState, setLoading } =
-  chatsSlice.actions;
+export const { setChats, setLoading } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

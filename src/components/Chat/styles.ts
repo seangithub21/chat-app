@@ -3,6 +3,7 @@ const getStyles = () => ({
     display: "flex",
     flexDirection: "column" as const,
     height: "100%",
+    backgroundColor: "#fff",
   },
   backButton: {
     fontSize: "2rem",

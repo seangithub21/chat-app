@@ -23,6 +23,7 @@ interface Props {
   children?: JSX.Element;
 }
 
+// TODO: Check and reduce redundant useEffect() runs
 const ProtectedRoute = ({ children }: Props): JSX.Element => {
   const [currentChatOpen, setCurrentChatOpen] = useState<string>("");
   const { user: reduxUser } = useAppSelector((state) => state.auth);

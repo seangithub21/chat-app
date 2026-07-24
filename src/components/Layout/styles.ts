@@ -5,7 +5,7 @@ interface Props {
 const getStyles = ({ isMobile }: Props) => ({
   layout: {
     height: "100%",
-    maxWidth: "1920px",
+    maxWidth: "1200px",
     margin: "auto",
     overflow: "hidden",
   },

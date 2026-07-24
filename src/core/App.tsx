@@ -85,6 +85,7 @@ const App = (): JSX.Element => {
                 ...baseTheme.components.MuiCssBaseline.styleOverrides.html,
                 "& #root": {
                   padding: isMobile ? "0" : "2rem",
+                  backgroundColor: "#f8f6f4",
                 },
               },
             },

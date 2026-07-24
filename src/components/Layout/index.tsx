@@ -18,14 +18,14 @@ const Layout = ({
   setCurrentChatOpen,
 }: Props): JSX.Element => {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
-  // const [currentChatOpen, setCurrentChatOpen] = useState<boolean>(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = getStyles({ isMobile });
 
-  // Open chat on page reload if chatId exists in sessionStorage
+  // Open chat on mobile on page reload if chatId exists in sessionStorage
   // useEffect(() => {
-  //   if (getCurrentChatId()) setCurrentChatOpen(true);
+  //   const chatId = getCurrentChatId() || "";
+  //   if (chatId) setCurrentChatOpen(chatId);
   // }, []);
 
   const handleOpenSideMenu = () => setSideMenuOpen((state) => !state);
@@ -36,7 +36,13 @@ const Layout = ({
     <div style={classes.layout}>
       {isMobile ? (
         <Grid container sx={classes.container}>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
             <SwipeableDrawer
               anchor="left"
               open={sideMenuOpen}
@@ -71,7 +77,14 @@ const Layout = ({
         </Grid>
       ) : (
         <Grid container spacing={2} sx={classes.container}>
-          <Grid item xs={4} lg={3}>
+          <Grid
+            item
+            xs={4}
+            lg={3}
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
             <SwipeableDrawer
               anchor="left"
               open={sideMenuOpen}

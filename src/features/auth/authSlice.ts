@@ -34,6 +34,7 @@ export const register = createAsyncThunk(
           return setDoc(userDocRef, {
             email,
             settings: {},
+            uid: userCredential.user.uid,
           });
         }
         return;
