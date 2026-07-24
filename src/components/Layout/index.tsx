@@ -1,8 +1,10 @@
 import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { Grid, SwipeableDrawer, useMediaQuery, useTheme } from "@mui/material";
+import { signOut } from "firebase/auth";
 
 import Chat from "components/Chat";
 import ChatsList from "components/ChatsList";
+import { auth } from "configs/firebase";
 
 import getStyles from "./styles";
 
@@ -34,6 +36,22 @@ const Layout = ({
 
   return (
     <div style={classes.layout}>
+      <SwipeableDrawer
+        anchor="left"
+        open={sideMenuOpen}
+        onOpen={handleOpenSideMenu}
+        onClose={handleOpenSideMenu}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: isMobile ? "70vw" : "30vw",
+          },
+        }}
+      >
+        <div style={classes.menu}>
+          <div>Menu</div>
+          <button onClick={() => signOut(auth)}>Sign out</button>
+        </div>
+      </SwipeableDrawer>
       {isMobile ? (
         <Grid container sx={classes.container}>
           <Grid
@@ -43,19 +61,6 @@ const Layout = ({
               backgroundColor: "#fff",
             }}
           >
-            <SwipeableDrawer
-              anchor="left"
-              open={sideMenuOpen}
-              onOpen={handleOpenSideMenu}
-              onClose={handleOpenSideMenu}
-              sx={{
-                "& .MuiDrawer-paper": {
-                  width: "70vw",
-                },
-              }}
-            >
-              Menu
-            </SwipeableDrawer>
             <ChatsList
               handleOpenSideMenu={handleOpenSideMenu}
               setCurrentChatOpen={setCurrentChatOpen}
@@ -77,27 +82,7 @@ const Layout = ({
         </Grid>
       ) : (
         <Grid container spacing={2} sx={classes.container}>
-          <Grid
-            item
-            xs={4}
-            lg={3}
-            style={{
-              backgroundColor: "#fff",
-            }}
-          >
-            <SwipeableDrawer
-              anchor="left"
-              open={sideMenuOpen}
-              onOpen={handleOpenSideMenu}
-              onClose={handleOpenSideMenu}
-              sx={{
-                "& .MuiDrawer-paper": {
-                  width: "30vw",
-                },
-              }}
-            >
-              Menu
-            </SwipeableDrawer>
+          <Grid item xs={4} lg={3}>
             <ChatsList
               handleOpenSideMenu={handleOpenSideMenu}
               setCurrentChatOpen={setCurrentChatOpen}

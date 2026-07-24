@@ -5,12 +5,19 @@ interface Props {
 const getStyles = ({ isMobile }: Props) => ({
   layout: {
     height: "100%",
-    maxWidth: "1200px",
     margin: "auto",
+    maxWidth: "1200px",
     overflow: "hidden",
   },
   container: {
     height: "100%",
+  },
+  menu: {
+    display: "flex",
+    flexDirection: "column" as const,
+    height: "100%",
+    justifyContent: "space-between",
+    padding: "2rem",
   },
 });
 

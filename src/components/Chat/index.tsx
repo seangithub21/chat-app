@@ -21,7 +21,7 @@ const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useAppDispatch();
-  const classes = getStyles();
+  const classes = getStyles({ isMobile });
 
   const handleSubmitMessage = (data: FormikValues, { resetForm }: any) => {
     data.message &&
@@ -35,7 +35,7 @@ const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
 
   return (
     <div style={classes.container}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ borderRadius: isMobile ? "" : "1rem" }}>
         <Toolbar>
           {isMobile && (
             <Button isIcon onClick={handleCloseChat}>
@@ -44,34 +44,36 @@ const Chat = ({ setCurrentChatOpen }: Props): JSX.Element => {
           )}
         </Toolbar>
       </AppBar>
-      <div style={classes.messages}>
-        <Messages />
-      </div>
-      <div>
-        <Formik
-          initialValues={{ message: "" }}
-          onSubmit={handleSubmitMessage}
-          enableReinitialize
-        >
-          {({ handleSubmit }) => (
-            <form onSubmit={handleSubmit} style={classes.form}>
-              <Field name="message">
-                {({ field }: FieldProps) => (
-                  <Input
-                    field={field}
-                    label="Message"
-                    multiline
-                    maxRows={4}
-                    fullWidth
-                  />
-                )}
-              </Field>
-              <Button isIcon type="submit">
-                <SendIcon />
-              </Button>
-            </form>
-          )}
-        </Formik>
+      <div style={classes.chat}>
+        <div style={classes.messages}>
+          <Messages />
+        </div>
+        <div>
+          <Formik
+            initialValues={{ message: "" }}
+            onSubmit={handleSubmitMessage}
+            enableReinitialize
+          >
+            {({ handleSubmit }) => (
+              <form onSubmit={handleSubmit} style={classes.form}>
+                <Field name="message">
+                  {({ field }: FieldProps) => (
+                    <Input
+                      field={field}
+                      label="Message"
+                      multiline
+                      maxRows={4}
+                      fullWidth
+                    />
+                  )}
+                </Field>
+                <Button isIcon type="submit">
+                  <SendIcon sx={{ fontSize: "3rem" }} />
+                </Button>
+              </form>
+            )}
+          </Formik>
+        </div>
       </div>
     </div>
   );

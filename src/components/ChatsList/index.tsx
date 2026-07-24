@@ -1,7 +1,14 @@
 import { Dispatch, JSX, SetStateAction, useState } from "react";
-import { signOut } from "firebase/auth";
 import MenuIcon from "@mui/icons-material/Menu";
-import { AppBar, List, ListItem, ListItemButton, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  List,
+  ListItem,
+  ListItemButton,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 import Contacts from "components/Contacts";
 import Button from "components/common/Button";
@@ -21,6 +28,8 @@ const ChatsList = ({
 }: Props): JSX.Element => {
   const [modal, setModal] = useState("");
   const { chats } = useAppSelector((state) => state.chats);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleOpenChat = (chatId: string) => {
     const currentChatId = getCurrentChatId() || "";
@@ -37,41 +46,63 @@ const ChatsList = ({
   const handleCloseModal = () => setModal("");
 
   return (
-    <div>
-      <AppBar position="static">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "1.6rem",
+        height: "100%",
+      }}
+    >
+      <AppBar position="static" sx={{ borderRadius: isMobile ? "" : "1rem" }}>
         <Toolbar>
-          <Button isIcon onClick={handleOpenSideMenu}>
-            <MenuIcon fontSize="large" sx={{ color: "#fff" }} />
+          <Button
+            isIcon
+            onClick={handleOpenSideMenu}
+            sx={{ marginRight: "1rem" }}
+          >
+            <MenuIcon fontSize="large" />
           </Button>
-          <button onClick={handleStartNewChat}>New chat +</button>
         </Toolbar>
       </AppBar>
-      <Modal isOpen={modal === "newChat"} handleClose={handleCloseModal}>
-        <Contacts
-          handleOpenChat={handleOpenChat}
-          handleCloseModal={handleCloseModal}
-        />
-      </Modal>
-      {!!Object.keys(chats).length ? (
-        <List>
-          {Object.keys(chats).map((id: string, index: number) => {
-            let chatWith = chats[id].participantEmails?.filter(
-              (email: string) => email !== auth.currentUser?.email,
-            )[0];
+      <div
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: isMobile ? "" : "1rem",
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+          height: "100%",
+        }}
+      >
+        <Modal isOpen={modal === "newChat"} handleClose={handleCloseModal}>
+          <Contacts
+            handleOpenChat={handleOpenChat}
+            handleCloseModal={handleCloseModal}
+          />
+        </Modal>
+        <button onClick={handleStartNewChat}>New chat +</button>
+        {!!Object.keys(chats).length ? (
+          <List>
+            {Object.keys(chats).map((id: string, index: number) => {
+              let chatWith = chats[id].participantEmails?.filter(
+                (email: string) => email !== auth.currentUser?.email,
+              )[0];
 
-            return (
-              <ListItem key={index}>
-                <ListItemButton onClick={() => handleOpenChat(id)}>
-                  {chatWith}
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      ) : (
-        "No chats yet..."
-      )}
-      <Button onClick={() => signOut(auth)}>Sign out</Button>
+              return (
+                <ListItem key={index}>
+                  <ListItemButton
+                    sx={{ borderRadius: "1rem" }}
+                    onClick={() => handleOpenChat(id)}
+                  >
+                    {chatWith}
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        ) : (
+          "No chats yet..."
+        )}
+      </div>
     </div>
   );
 };
