@@ -55,7 +55,11 @@ const Contacts = ({ handleOpenChat, handleCloseModal }: Props): JSX.Element => {
 
   return (
     <div>
-      <DebouncedInput label="Search users" handleDebounce={handleSearch} />
+      <DebouncedInput
+        label="Search users"
+        handleDebounce={handleSearch}
+        fullWidth
+      />
       {!!searchResults.length && (
         <List>
           {searchResults.map((searchResult: any) => (

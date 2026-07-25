@@ -85,7 +85,8 @@ const App = (): JSX.Element => {
                 ...baseTheme.components.MuiCssBaseline.styleOverrides.html,
                 "& #root": {
                   padding: isMobile ? "0" : "2rem",
-                  backgroundColor: "#f8f6f4",
+                  backgroundImage:
+                    "linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%)",
                 },
               },
             },

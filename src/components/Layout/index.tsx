@@ -76,7 +76,10 @@ const Layout = ({
                 },
               }}
             >
-              <Chat setCurrentChatOpen={setCurrentChatOpen} />
+              <Chat
+                currentChatOpen={currentChatOpen}
+                setCurrentChatOpen={setCurrentChatOpen}
+              />
             </SwipeableDrawer>
           </Grid>
         </Grid>
@@ -89,7 +92,7 @@ const Layout = ({
             />
           </Grid>
           <Grid item xs={8} lg={9}>
-            <Chat />
+            <Chat currentChatOpen={currentChatOpen} />
           </Grid>
         </Grid>
       )}

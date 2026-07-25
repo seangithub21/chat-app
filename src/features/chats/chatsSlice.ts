@@ -6,7 +6,6 @@ import { ChatUser } from "types";
 
 interface InitialState {
   chats: any;
-  currentChatId: string | null;
   isLoading: Boolean;
 }
 
@@ -16,7 +15,6 @@ interface StartChatParams {
 
 const initialState: InitialState = {
   chats: {},
-  currentChatId: null,
   isLoading: false,
 };
 

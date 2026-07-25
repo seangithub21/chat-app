@@ -55,14 +55,11 @@ const ChatsList = ({
       }}
     >
       <AppBar position="static" sx={{ borderRadius: isMobile ? "" : "1rem" }}>
-        <Toolbar>
-          <Button
-            isIcon
-            onClick={handleOpenSideMenu}
-            sx={{ marginRight: "1rem" }}
-          >
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button isIcon onClick={handleOpenSideMenu}>
             <MenuIcon fontSize="large" />
           </Button>
+          <button onClick={handleStartNewChat}>New chat +</button>
         </Toolbar>
       </AppBar>
       <div
@@ -79,7 +76,6 @@ const ChatsList = ({
             handleCloseModal={handleCloseModal}
           />
         </Modal>
-        <button onClick={handleStartNewChat}>New chat +</button>
         {!!Object.keys(chats).length ? (
           <List>
             {Object.keys(chats).map((id: string, index: number) => {
