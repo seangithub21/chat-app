@@ -1,0 +1,65 @@
+const theme = {
+  palette: {},
+  typography: {
+    fontFamily: [
+      "system-ui",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    h2: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontSize: "1.6rem",
+    },
+    button: {
+      fontSize: "1.6rem",
+    },
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        html: {
+          fontSize: 10,
+          height: "100%",
+          "& body, & #root": {
+            height: "100%",
+          },
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        message: {
+          fontSize: "1.4rem",
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#fff",
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+        },
+      },
+    },
+  },
+};
+
+export const darkMode = {
+  ...theme,
+};
+
+export const mobile = {
+  ...theme,
+};
+
+export default theme;
