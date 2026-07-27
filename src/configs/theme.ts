@@ -14,32 +14,20 @@ const theme = {
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
+    fontSize: 12,
     h2: {
+      fontSize: "2.5rem",
       fontWeight: 600,
-    },
-    body1: {
-      fontSize: "1.6rem",
-    },
-    button: {
-      fontSize: "1.6rem",
     },
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         html: {
-          fontSize: 10,
           height: "100%",
           "& body, & #root": {
             height: "100%",
           },
-        },
-      },
-    },
-    MuiAlert: {
-      styleOverrides: {
-        message: {
-          fontSize: "1.4rem",
         },
       },
     },
@@ -51,14 +39,18 @@ const theme = {
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          background: "linear-gradient(135deg, #8be8cb 0%, #7fb8ff 100%)",
+          color: "#fff",
+        },
+      },
+    },
   },
 };
 
 export const darkMode = {
-  ...theme,
-};
-
-export const mobile = {
   ...theme,
 };
 

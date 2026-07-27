@@ -42,11 +42,19 @@ const Chat = ({ currentChatOpen, setCurrentChatOpen }: Props): JSX.Element => {
 
   return (
     <div style={classes.container}>
-      <AppBar position="static" sx={{ borderRadius: isMobile ? "" : "1rem" }}>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundImage: isMobile
+            ? "linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%)"
+            : "none",
+          borderRadius: isMobile ? "" : "1rem",
+        }}
+      >
         <Toolbar sx={{ display: "flex", gap: "1rem" }}>
           {isMobile && (
             <Button isIcon onClick={handleCloseChat}>
-              <ArrowBackIcon sx={classes.backButton} />
+              <ArrowBackIcon />
             </Button>
           )}
           <div style={{ color: "#000" }}>{chatWith}</div>
@@ -76,7 +84,7 @@ const Chat = ({ currentChatOpen, setCurrentChatOpen }: Props): JSX.Element => {
                   )}
                 </Field>
                 <Button isIcon type="submit">
-                  <SendIcon sx={{ fontSize: "3rem" }} />
+                  <SendIcon />
                 </Button>
               </form>
             )}

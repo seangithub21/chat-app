@@ -4,6 +4,7 @@ import { signOut } from "firebase/auth";
 
 import Chat from "components/Chat";
 import ChatsList from "components/ChatsList";
+import Button from "components/common/Button";
 import { auth } from "configs/firebase";
 
 import getStyles from "./styles";
@@ -49,18 +50,12 @@ const Layout = ({
       >
         <div style={classes.menu}>
           <div>Menu</div>
-          <button onClick={() => signOut(auth)}>Sign out</button>
+          <Button onClick={() => signOut(auth)}>Sign out</Button>
         </div>
       </SwipeableDrawer>
       {isMobile ? (
         <Grid container sx={classes.container}>
-          <Grid
-            item
-            xs={12}
-            style={{
-              backgroundColor: "#fff",
-            }}
-          >
+          <Grid item xs={12}>
             <ChatsList
               handleOpenSideMenu={handleOpenSideMenu}
               setCurrentChatOpen={setCurrentChatOpen}

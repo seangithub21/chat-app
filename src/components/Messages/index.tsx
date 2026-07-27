@@ -13,7 +13,6 @@ const Messages = (): JSX.Element => {
             flexDirection: "column",
             gap: "1rem",
             height: "100%",
-            padding: "1rem",
           }}
         >
           {Object.keys(messages)
@@ -32,7 +31,7 @@ const Messages = (): JSX.Element => {
                   style={{
                     borderRadius: "1rem",
                     boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-                    padding: "1rem",
+                    padding: ".65rem",
                   }}
                 >
                   {messages[messageId].text}

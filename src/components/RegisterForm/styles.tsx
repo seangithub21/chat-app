@@ -3,8 +3,8 @@ const getStyles = () => ({
     backgroundColor: "#fff",
     borderRadius: "1rem",
     boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-    maxWidth: "35rem",
-    padding: "3rem",
+    maxWidth: "25rem",
+    padding: "2rem",
   },
   heading: {
     marginBottom: "2rem",

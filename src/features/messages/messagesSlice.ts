@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
 import { FormikValues } from "formik";
 
 import { auth, db } from "configs/firebase";
@@ -18,11 +24,21 @@ export const sendMessage = createAsyncThunk(
   "messages/sendMessage",
   async ({ data, chatId }: MessageData) => {
     try {
-      await addDoc(collection(db, `chats/${chatId}/messages`), {
-        text: data.message,
-        // NOTE: serverTimestamp() is causing onSnapshot() to run twice
-        timestamp: serverTimestamp(),
-        createdBy: auth.currentUser?.uid,
+      await runTransaction(db, async (transaction) => {
+        const chatDocRef = doc(db, `chats/${chatId}`);
+        const chatDocSnap = await transaction.get(chatDocRef);
+        if (!chatDocSnap.exists()) {
+          throw new Error("Document does not exist!");
+        }
+
+        await addDoc(collection(db, `chats/${chatId}/messages`), {
+          text: data.message,
+          // NOTE: serverTimestamp() is causing onSnapshot() to run twice
+          timestamp: serverTimestamp(),
+          createdBy: auth.currentUser?.uid,
+        });
+
+        transaction.update(chatDocRef, { lastMessage: data.message });
       });
     } catch (error) {
       throw new Error(`${error}`);
