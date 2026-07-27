@@ -29,7 +29,7 @@ const LoginForm = (): JSX.Element => {
       <Typography variant="h2" sx={classes.heading}>
         Login
       </Typography>
-      <Alert severity="info" sx={{ marginBottom: "2rem" }}>
+      <Alert severity="info" sx={{ marginBottom: "1.5rem" }}>
         For demo please use credentials:
         <div>&#x2022; Email: {process.env.REACT_APP_EMAIL_DEMO}</div>
         <div>&#x2022; Password: {process.env.REACT_APP_PASSWORD_DEMO}</div>
@@ -51,7 +51,7 @@ const LoginForm = (): JSX.Element => {
                 <Input field={field} label="Password" fullWidth />
               )}
             </Field>
-            <Button type="submit" fullWidth sx={{ margin: "2rem 0" }}>
+            <Button type="submit" fullWidth sx={{ margin: "1.5rem 0" }}>
               Login
             </Button>
           </form>

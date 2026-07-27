@@ -20,7 +20,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 
 import { auth } from "configs/firebase";
-import baseTheme, { darkMode, mobile } from "configs/theme";
+import baseTheme, { darkMode } from "configs/theme";
 import { publicPaths, privatePaths } from "configs/routePaths";
 import { setUser } from "features/auth/authSlice";
 import { useAppDispatch } from "hooks/reduxHooks";
@@ -54,6 +54,7 @@ const App = (): JSX.Element => {
   const [themeMode, setThemeMode] = useState<PaletteMode>("light");
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(muiTheme.breakpoints.down("md"));
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -75,7 +76,8 @@ const App = (): JSX.Element => {
           ...(themeMode === "light" ? baseTheme.palette : darkMode.palette),
         },
         typography: {
-          ...(isMobile ? mobile.typography : baseTheme.typography),
+          ...baseTheme.typography,
+          fontSize: isTablet ? baseTheme.typography.fontSize : 14,
         },
         components: {
           ...baseTheme.components,
@@ -93,7 +95,7 @@ const App = (): JSX.Element => {
           },
         },
       }),
-    [themeMode, isMobile],
+    [themeMode, isMobile, isTablet],
   );
 
   // Subscribe to user's Firebase auth state

@@ -50,14 +50,22 @@ const ChatsList = ({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "1.6rem",
+        gap: isMobile ? "0" : "1rem",
         height: "100%",
       }}
     >
-      <AppBar position="static" sx={{ borderRadius: isMobile ? "" : "1rem" }}>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundImage: isMobile
+            ? "linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%)"
+            : "none",
+          borderRadius: isMobile ? "" : "1rem",
+        }}
+      >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button isIcon onClick={handleOpenSideMenu}>
-            <MenuIcon fontSize="large" />
+            <MenuIcon />
           </Button>
           <button onClick={handleStartNewChat}>New chat +</button>
         </Toolbar>
@@ -79,17 +87,24 @@ const ChatsList = ({
         {!!Object.keys(chats).length ? (
           <List>
             {Object.keys(chats).map((id: string, index: number) => {
-              let chatWith = chats[id].participantEmails?.filter(
+              const chatWith = chats[id].participantEmails?.filter(
                 (email: string) => email !== auth.currentUser?.email,
               )[0];
 
               return (
+                // TODO: Align height
                 <ListItem key={index}>
                   <ListItemButton
-                    sx={{ borderRadius: "1rem" }}
+                    sx={{
+                      alignItems: "start",
+                      borderRadius: "1rem",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
                     onClick={() => handleOpenChat(id)}
                   >
-                    {chatWith}
+                    <div style={{ fontWeight: 700 }}>{chatWith}</div>
+                    <div>{chats[id].lastMessage}</div>
                   </ListItemButton>
                 </ListItem>
               );

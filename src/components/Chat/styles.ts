@@ -6,7 +6,7 @@ const getStyles = ({ isMobile }: Props) => ({
   container: {
     display: "flex",
     flexDirection: "column" as const,
-    gap: "1.6rem",
+    gap: isMobile ? "0" : "1rem",
     height: "100%",
   },
   chat: {
@@ -17,10 +17,7 @@ const getStyles = ({ isMobile }: Props) => ({
     flexDirection: "column" as const,
     gap: "1rem",
     height: "100%",
-    padding: "2rem",
-  },
-  backButton: {
-    fontSize: "2rem",
+    padding: isMobile ? "1rem" : "2rem",
   },
   form: {
     display: "flex",
@@ -29,6 +26,7 @@ const getStyles = ({ isMobile }: Props) => ({
   messages: {
     overflowY: "scroll" as const,
     flex: "1 1 0",
+    padding: "1rem",
   },
 });
 
